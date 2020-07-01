@@ -1,0 +1,262 @@
+version: '2'
+
+services:
+
+  res_ftpd:
+    image: fauria/vsftpd
+    restart: always
+    volumes:
+      - res_server_data:/home/vsftpd
+      - /etc/hosts:/etc/hosts
+    environment:
+      - LOG_STDOUT=true
+      - FTP_USER=${RES_FTP_USER}
+      - FTP_PASS=${RES_FTP_PASS}
+      - PASV_ENABLE=YES
+      - PASV_ADDRESS_ENABLE=YES
+      - PASV_ADDRESS=${RES_FTP_PASV_ADDRESS}
+      - FILE_OPEN_MODE=0666
+      - LOCAL_UMASK=022
+    ports:
+      - "41520:20"
+      - "41521:21"
+      - "21100-21110:21100-21110"
+
+  res_server:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - '80:80'
+    command: >
+      /bin/sh -c "
+        echo 'server {' > /etc/nginx/conf.d/default.conf &&
+        echo ' listen 80;' >> /etc/nginx/conf.d/default.conf &&
+        echo ' server_name qzfs.tw.cdn.mecheast.com;' >> /etc/nginx/conf.d/default.conf &&
+        echo ' location / {' >> /etc/nginx/conf.d/default.conf &&
+        echo '   root /usr/share/nginx/html;' >> /etc/nginx/conf.d/default.conf &&
+        echo '   index index.html index.htm;' >> /etc/nginx/conf.d/default.conf &&
+        echo ' }' >> /etc/nginx/conf.d/default.conf &&
+        echo '}' >> /etc/nginx/conf.d/default.conf &&
+        exec nginx -g 'daemon off;'"
+    volumes:
+      - res_server_data:/usr/share/nginx/html
+      - /etc/hosts:/etc/hosts
+
+  logstash:
+    image: logstash:${ELASTIC_VER}
+    restart: always
+    network_mode: host
+    ports:
+      - 5044:5044
+    volumes:
+      - logstash_config:/usr/share/logstash/config/
+      - logstash_pipeline:/usr/share/logstash/pipeline/
+      - /etc/hosts:/etc/hosts
+
+  dist_server:
+    container_name: dist_server
+    image: ${DOCKER_REGISTRY}/gs/dist_server:${DIST_SERVER_VER}
+    restart: always
+    ports:
+      - '50022:22'
+    volumes:
+      - dist_server_data:/data
+      - res_server_data:/res
+    volumes_from:
+      - logstash:rw
+
+  es:
+    image: elasticsearch:${ELASTIC_VER}
+    restart: always
+    network_mode: host
+    environment:
+      - node.name=es2
+      - cluster.name=${ES_CLUSTER_NAME}
+      - cluster.initial_master_nodes=${ES_CLUSTER_INITIAL_MASTER_NODES}
+      - discovery.seed_hosts=gm1,gm3
+      - cluster.max_shards_per_node=9999
+      - thread_pool.write.queue_size=800
+      - bootstrap.memory_lock=true
+      - node.master=true
+      - node.data=true
+      - node.ingest=true
+      - node.ml=false
+      - node.attr.zone=${ES_NODE_ZONE}
+      - network.host=0.0.0.0
+      - network.publish_host=192.168.3.34
+      - transport.tcp.port=9300
+      - xpack.security.enabled=false
+      - xpack.monitoring.enabled=true
+      - xpack.monitoring.collection.enabled=true
+      - xpack.monitoring.elasticsearch.collection.enabled=true
+      - indices.fielddata.cache.size=35%
+      #- ES_HEAP_SIZE=512m              #根据内核情况而定
+      - "ES_JAVA_OPTS=-Xms1g  -Xmx1g "          #根据内核情况而定
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es2_data:/usr/share/elasticsearch/data
+      - /etc/hosts:/etc/hosts
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  ops1:
+    image: ${DOCKER_REGISTRY}/gs/ops-app-server:v2
+    restart: always
+    ports:
+      - '52201:22'
+      - '8180:80'
+      - '8181:81'
+      - '8182:82'
+      - '8183:83'
+    volumes:
+      - ops1:/app
+      - /etc/hosts:/etc/hosts
+
+  #ops2:
+    #image: ${DOCKER_REGISTRY}/gs/ops-app-server:v2
+    #restart: always
+    #ports:
+      #- '52202:22'
+      #- '8280:80'
+      #- '8281:81'
+      #- '8282:82'
+      #- '8283:83'
+    #volumes:
+      #- ops2:/app
+      #- /etc/hosts:/etc/hosts
+
+  #ops3:
+    #image: ${DOCKER_REGISTRY}/gs/ops-app-server:v2
+    #restart: always
+    #ports:
+      #- '52203:22'
+      #- '8380:80'
+      #- '8381:81'
+      #- '8382:82'
+      #- '8383:83'
+    #volumes:
+      #- ops3:/app
+      #- /etc/hosts:/etc/hosts
+
+  #ops4:
+    #image: ${DOCKER_REGISTRY}/gs/ops-app-server:v2
+    #restart: always
+    #ports:
+      #- '52204:22'
+      #- '8480:80'
+      #- '8481:81'
+      #- '8482:82'
+      #- '8483:83'
+    #volumes:
+      #- ops4:/app
+      #- /etc/hosts:/etc/hosts
+
+  #ops5:
+    #image: ${DOCKER_REGISTRY}/gs/ops-app-server:v2
+    #restart: always
+    #ports:
+      #- '52205:22'
+      #- '8580:80'
+      #- '8581:81'
+      #- '8582:82'
+      #- '8583:83'
+    #volumes:
+      #- ops5:/app
+      #- /etc/hosts:/etc/hosts
+
+  #ops6:
+    #image: ${DOCKER_REGISTRY}/gs/ops-app-server:v2
+    #restart: always
+    #ports:
+      #- '52206:22'
+      #- '8680:80'
+      #- '8681:81'
+      #- '8682:82'
+      #- '8683:83'
+    #volumes:
+      #- ops6:/app
+      #- /etc/hosts:/etc/hosts
+
+  #ops7:
+    #image: ${DOCKER_REGISTRY}/gs/ops-app-server:v2
+    #restart: always
+    #ports:
+      #- '52207:22'
+      #- '8780:80'
+      #- '8781:81'
+      #- '8782:82'
+      #- '8783:83'
+    #volumes:
+      #- ops7:/app
+      #- /etc/hosts:/etc/hosts
+
+  #ops8:
+    #image: ${DOCKER_REGISTRY}/gs/ops-app-server:v2
+    #restart: always
+    #ports:
+      #- '52208:22'
+      #- '8880:80'
+      #- '8881:81'
+      #- '8882:82'
+      #- '8883:83'
+    #volumes:
+      #- ops8:/app
+      #- /etc/hosts:/etc/hosts
+
+  ops-mongo:
+    image: mongo:${MONGO_VER}
+    restart: always
+    ports:
+      - 127.0.0.1:27018:27017
+    volumes:
+      - ops-mongo-data:/data/db
+
+  bsmongo:
+    container_name: bsmongo
+    image: mongo:${MONGO_VER}
+    restart: always
+    command: mongos --bind_ip_all --port=27017 --configdb=${MONGO_CONFIGDB}
+    volumes:
+      - /etc/hosts:/etc/hosts
+    ports:
+      - '127.0.0.1:27019:27017'
+
+volumes:
+  dist_server_data:
+    driver: local
+
+  res_server_data:
+    driver: local
+
+  logstash_config:
+    driver: local
+  logstash_pipeline:
+    driver: local
+
+  es2_data:
+    driver: local
+
+  ops1:
+    driver: local
+  #ops2:
+    #driver: local
+  #ops3:
+    #driver: local
+  #ops4:
+    #driver: local
+  #ops5:
+    #driver: local
+  #ops6:
+    #driver: local
+  #ops7:
+    #driver: local
+  #ops8:
+    #driver: local
+
+  ops-mongo-data:
+    driver: local
+

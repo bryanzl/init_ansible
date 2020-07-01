@@ -1,0 +1,5 @@
+- name: mv gm2
+  copy: src=gm2 dest=/home/gs/
+
+- name: init gm2
+  shell: source /home/gs/gm2/conf/env;cd /home/gs/gm2;docker-compose up -d --remove-orphans

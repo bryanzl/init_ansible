@@ -1,0 +1,5 @@
+- name: mv game-server
+  copy: src=game-server dest=/home/gs/
+
+- name: init game-server
+  shell: cd /home/gs/game-server/;docker-compose up -d

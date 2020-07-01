@@ -1,0 +1,47 @@
+- name: Ulimit change
+  shell: ulimit -SHn 102400
+
+- name: 添加 rc.local
+  lineinfile:
+    dest: /etc/rc.local
+    regexp: 'ulimit -SHn 102400'
+    backrefs: no
+    line: 'ulimit -SHn 102400'
+
+- name: 修改limits.conf文件 soft
+  lineinfile:
+    dest: /etc/security/limits.conf
+    regexp: '\* soft nofile [0-9]+'
+    backrefs: no
+    line: '* soft nofile 65535'
+
+- name: 修改limits.conf文件 hard
+  lineinfile:
+    dest: /etc/security/limits.conf
+    regexp: '\* hard nofile [0-9]+'
+    backrefs: no
+    line: '* hard nofile 65535'
+
+- name: 添加system.conf DefaultLimitCORE
+  lineinfile:
+    dest: /etc/systemd/system.conf
+    regexp: 'DefaultLimitCORE=infinity'
+    backrefs: no
+    line: 'DefaultLimitCORE=infinity'
+  when: ansible_os_family == "RedHat" and ansible_distribution_version|int == 7
+
+- name: 添加system.conf DefaultLimitNOFILE
+  lineinfile:
+    dest: /etc/systemd/system.conf
+    regexp: 'DefaultLimitNOFILE=100000'
+    backrefs: no
+    line: 'DefaultLimitNOFILE=100000'
+  when: ansible_os_family == "RedHat" and ansible_distribution_version|int == 7
+
+- name: 添加system.conf DefaultLimitNPROC
+  lineinfile:
+    dest: /etc/systemd/system.conf
+    regexp: 'DefaultLimitNPROC=100000'
+    backrefs: no
+    line: 'DefaultLimitNPROC=100000'
+  when: ansible_os_family == "RedHat" and ansible_distribution_version|int == 7

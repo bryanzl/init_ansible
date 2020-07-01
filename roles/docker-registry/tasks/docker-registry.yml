@@ -1,0 +1,29 @@
+- name: mv docker-registry
+  copy: src=registry dest=/home/gs/
+
+- name: bash docker-registry
+  shell: cd /home/gs/registry;docker-compose up -d --build
+
+- name: build game-server
+  shell: cd /home/gs/registry/build; bash build.sh game_server
+
+- name: build dist-server
+  shell: cd /home/gs/registry/build; bash build.sh dist_server 
+
+- name: build ops_app_server
+  shell: cd /home/gs/registry/build; bash build.sh ops_app_server
+
+- name: build bs-host-metric
+  shell: cd /home/gs/registry/build; bash build.sh bs-host-metric
+
+- name: push game_server
+  shell: cd /home/gs/registry/build; bash push.sh game_server
+
+- name: push dist_server
+  shell: cd /home/gs/registry/build; bash push.sh dist_server
+
+- name: push ops_app_server
+  shell: cd /home/gs/registry/build; bash push.sh ops_app_server
+
+- name: push bs-host-metric
+  shell: cd /home/gs/registry/build; bash push.sh bs-host-metric

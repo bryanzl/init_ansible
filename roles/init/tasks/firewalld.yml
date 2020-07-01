@@ -1,0 +1,27 @@
+- name: 关闭防火墙
+  service: name=firewalld state=stopped enabled=no
+  when
+
+#- name: set iptables rule
+      #shell: 
+        # 备份已有规则
+        #iptables-save > /tmp/iptables.bak$(date +"%F-%T")
+        # 给它三板斧
+        #iptables -X
+        #iptables -F
+        #iptables -Z
+ 
+        # 放行lo网卡和允许ping
+        #iptables -A INPUT -i lo -j ACCEPT
+        #iptables -A INPUT -p icmp -j ACCEPT
+ 
+        # 放行关联和已建立连接的包，放行22、443、80端口
+        #iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+        #iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+        #iptables -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
+        #iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+ 
+        # 配置filter表的三链默认规则，INPUT链丢弃所有包
+        #iptables -P INPUT DROP
+        #iptables -P FORWARD DROP
+        #iptables -P OUTPUT ACCEPT

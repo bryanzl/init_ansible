@@ -1,0 +1,32 @@
+- name: install docker
+  yum: name=docker-ce state=present
+
+- name: create /etc/docker
+  file:
+    path: "/etc/docker"
+    state: directory
+
+- name: create /data/docker
+  file:
+    path: "/etc/docker"
+    state: directory
+
+- name: provide docker-ce configfile
+  template:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+
+- name: provide docker-compose configfile
+  copy:
+    src: docker-compose
+    dest: /usr/local/bin/docker-compose
+    mode: 0755
+
+- name: config docker-compose
+  shell: ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+  
+- name: start docker service
+  systemd:
+    name: docker
+    state: restarted
+    enabled: true

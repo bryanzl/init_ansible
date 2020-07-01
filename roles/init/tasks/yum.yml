@@ -1,0 +1,47 @@
+- name: 删除老yum源
+  shell: rm -rf /etc/yum.repos.d
+
+- name: 添加新yum源 
+  copy: src={{ item }} dest=/etc/yum.repos.d/
+  with_items:
+    - "Centos-7.repo"
+    - "docker-ce.repo"
+    - "epel-7.repo"
+
+- name: Basic lib install
+  yum: name={{ item }} state=latest update_cache=yes
+  with_items:
+    - iotop
+    - sshpass
+    - iftop
+    - yum-utils
+    - net-tools
+    - rsync
+    - git
+    - lrzsz
+    - expect
+    - gcc 
+    - gcc-c++ 
+    - make 
+    - cmake 
+    - libxml2-devel 
+    - openssl-devel 
+    - curl 
+    - curl-devel 
+    - unzip 
+    - sudo 
+    - ntp 
+    - libaio-devel 
+    - wget 
+    - vim 
+    - ncurses-devel 
+    - autoconf 
+    - automake 
+    - zlib-devel  
+    - python-devel 
+    - bash-completion 
+    - rsync 
+    - jq 
+    - htop
+
+

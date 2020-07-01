@@ -1,0 +1,11 @@
+- name: mv db-init shell
+  copy: src=shell dest=/home/gs/
+
+- name: Initialize the mongodb-configsrv
+  shell: cd /home/gs/shell/;bash -x init_configsrv.sh
+
+- name: Initialize the mongodb-data replset
+  shell: cd /home/gs/shell/;bash -x init_all_data_node.sh
+
+- name: Initialize the mongodb-data shards
+  shell: cd /home/gs/shell/;bash -x add_all_shards.sh

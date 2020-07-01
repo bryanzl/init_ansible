@@ -1,0 +1,104 @@
+version: '3.5'
+services:
+  web:
+    build:
+      context: ./web-portal
+    container_name: zabbix-nginx
+    ports:
+      - "9880:8080"
+      - "9881:8081"
+    links:
+      - mysql
+      - server
+    environment:
+      SET_CONTAINER_TIMEZONE: "true"
+      CONTAINER_TIMEZONE: "Asia/Shanghai"
+      DB_SERVER_HOST: "mysql"
+      MYSQL_DATABASE: "zabbix"
+      MYSQL_USER: "zabbix"
+      MYSQL_PASSWORD: "szx123456"
+      ZBX_SERVER_HOST: zabbix-server
+      PHP_TZ: "Asia/Shanghai"
+    volumes:
+      - /etc/timezone:/etc/timezone        
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+      - /etc/hosts:/etc/hosts
+    user: root
+    depends_on:
+      - mysql
+      - server
+    sysctls:
+      - net.core.somaxconn=65535
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    stop_grace_period: 10s
+
+
+     # mysql 容器配置
+  mysql:
+    image: mysql:5.7
+    container_name: zabbix-mysql
+    command: 
+      - mysqld
+      - --character-set-server=utf8
+      - --collation-server=utf8_bin
+      - --default-authentication-plugin=mysql_native_password
+      - --max_connections=1000
+    ports:
+      - "127.0.0.1:3306:3306"
+    env_file:
+      - env_mysql
+    user: root
+    volumes:
+      - /zabbix/mysql:/var/lib/mysql:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/hosts:/etc/hosts
+    restart: always
+    stop_grace_period: 1m
+
+# zabbix-server 容器配置
+  server:
+    image: zabbix/zabbix-server-mysql:alpine-5.0-latest
+    container_name: zabbix-server
+    environment:
+      SET_CONTAINER_TIMEZONE: "true"
+      CONTAINER_TIMEZONE: "Asia/Shanghai"
+      DB_SERVER_HOST: "mysql"
+      MYSQL_DATABASE: "zabbix"
+      MYSQL_USER: "zabbix"
+      MYSQL_PASSWORD: "szx123456"
+      MYSQL_ROOT_PASSWORD: "szx20170808"
+    env_file:
+      - env_server
+    ports:
+      - "10051:10051"
+    volumes:
+      - /etc/timezone:/etc/timezone                      #同步主机时区
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime       #同步主机时间
+      - /etc/hosts:/etc/hosts
+    links:
+      - mysql
+    depends_on:
+      - mysql                                           #先启动zabbix
+    ulimits:
+     nproc: 65535
+     nofile:
+       soft: 20000
+       hard: 40000
+    user: root
+    restart: always
+    stop_grace_period: 30s
+    sysctls:
+      - net.ipv4.ip_local_port_range=1024 65000
+      - net.ipv4.conf.all.accept_redirects=0
+      - net.ipv4.conf.all.secure_redirects=0
+      - net.ipv4.conf.all.send_redirects=0
+
+volumes:
+  grafana_data:
+    driver: local

@@ -1,0 +1,5 @@
+{
+    "data-root": "/data/docker",
+    "registry-mirrors": ["https://yi2k6ovs.mirror.aliyuncs.com"],
+    "insecure-registries" : ["gm1:5500"]
+}

@@ -1,0 +1,41 @@
+metricbeat.config:
+
+metricbeat.modules:
+
+- module: docker
+  metricsets:
+    - "container"
+    - "info"
+  hosts: ["unix:///var/run/docker.sock"]
+  period: 1m
+  enabled: true
+
+- module: docker
+  metricsets:
+    - "cpu"
+    - "diskio"
+    - "memory"
+    - "network"
+  hosts: ["unix:///var/run/docker.sock"]
+  period: 15s
+  enabled: true
+
+setup.template:
+  enabled: true
+  overwrite: true
+  name: bs-host-metric-%{[agent.version]}
+  pattern: bs-host-metric-%{[agent.version]}-*
+  settings:
+    number_of_shards: 1
+
+setup.ilm:
+  enabled: auto
+  policy_name: bs-host-metric
+  rollover_alias: "bs-host-metric"
+  pattern: "{now/d}-000001"
+
+output.elasticsearch:
+  index: "bs-host-metric-%{[agent.version]}-%{+yyyy.MM.dd}"
+
+processors:
+  - add_host_metadata: ~

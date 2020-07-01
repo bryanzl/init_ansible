@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+
+  docker-registry:
+    build:
+      context: ./docker-registry
+    image: gm1/sa/docker-registry
+    restart: always
+    environment:
+    - REGISTRY_AUTH=htpasswd
+    - REGISTRY_AUTH_HTPASSWD_REALM=bs-docker-registry
+    - REGISTRY_AUTH_HTPASSWD_PATH=/auth/passwd
+    ports:
+    - "5500:5000"
+    volumes:
+    - docker_registry_data:/var/lib/registry
+
+volumes:
+  docker_registry_data:
+    driver: local

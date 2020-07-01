@@ -1,0 +1,18 @@
+- name: create user
+  user: 
+    name: gs
+    password: "{{ 'redhat'|password_hash('sha512') }}"
+    state: present
+
+- name: Create .ssh
+  file: path=/home/gs/.ssh owner=gs group=gs mode=700 state=directory
+
+- name: Add keys
+  copy: src=/home/gs/.ssh/authorized_keys dest=/home/gs/.ssh/authorized_keys owner=gs group=gs mode=600
+
+- name: 设置gs sudoers
+  lineinfile:
+    dest: /etc/sudoers
+    line: 'gs ALL = (root)  NOPASSWD: ALL'
+  #- name: update sudoers
+  #shell: echo "gs   ALL=(ALL)       NOPASSWD:ALL" >> /etc/sudoers

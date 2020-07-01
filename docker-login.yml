@@ -1,0 +1,7 @@
+- hosts: all
+  remote_user: gs
+  become: yes
+  gather_facts: true
+  tasks:
+    - name: docker-registry-login
+      shell: docker login gm1:5500 -u binstar -p b4e025f249ce5ce3

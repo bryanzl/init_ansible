@@ -1,0 +1,13 @@
+version: "2.2"
+
+services:
+
+  bsmongo:
+    container_name: bsmongo_s
+    image: mongo:${MONGO_VER}
+    restart: always
+    command: mongos --bind_ip_all --port=27017 --configdb=${MONGO_CONFIGDB}
+    volumes:
+      - /etc/hosts:/etc/hosts
+    ports:
+      - '127.0.0.1:27017:27017'

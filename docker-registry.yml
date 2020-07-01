@@ -1,0 +1,6 @@
+- hosts: gm1
+  remote_user: gs
+  become: yes
+  gather_facts: true
+  roles:
+    - docker-registry

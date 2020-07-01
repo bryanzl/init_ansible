@@ -1,0 +1,8 @@
+- name: 关闭selinux
+  lineinfile:
+    dest: /etc/selinux/config
+    regexp: "^SELINUX="
+    line: "SELINUX=disabled"
+
+- name: Selinux stop
+  selinux: state=disabled

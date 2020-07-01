@@ -1,0 +1,44 @@
+version: "2.2"
+
+services:
+
+  bsmongo_d-1-3:
+    container_name: bsmongo_d-1-3
+    image: mongo:${MONGO_VER}
+    restart: always
+    command: mongod --shardsvr --bind_ip_all --port=27017 --replSet=bsmongo-s-1 --dbpath=/data/db --storageEngine=wiredTiger --wiredTigerCacheSizeGB=1
+    volumes:
+      - d-1-3:/data/db
+      - /etc/hosts:/etc/hosts
+    ports:
+      - '34013:27017'
+
+  bsmongo_d-2-3:
+    container_name: bsmongo_d-2-3
+    image: mongo:${MONGO_VER}
+    restart: always
+    command: mongod --shardsvr --bind_ip_all --port=27017 --replSet=bsmongo-s-2 --dbpath=/data/db --storageEngine=wiredTiger --wiredTigerCacheSizeGB=1
+    volumes:
+      - d-2-3:/data/db
+      - /etc/hosts:/etc/hosts
+    ports:
+      - '34023:27017'
+
+  bsmongo_d-3-3:
+    container_name: bsmongo_d-3-3
+    image: mongo:${MONGO_VER}
+    restart: always
+    command: mongod --shardsvr --bind_ip_all --port=27017 --replSet=bsmongo-s-3 --dbpath=/data/db --storageEngine=wiredTiger --wiredTigerCacheSizeGB=1
+    volumes:
+      - d-3-3:/data/db
+      - /etc/hosts:/etc/hosts
+    ports:
+      - '34033:27017'
+
+volumes:
+  d-1-3:
+    driver: local
+  d-2-3:
+    driver: local
+  d-3-3:
+    driver: local

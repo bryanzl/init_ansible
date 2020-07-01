@@ -1,0 +1,99 @@
+version: '2'
+
+services:
+
+  logstash:
+    image: logstash:${ELASTIC_VER}
+    restart: always
+    network_mode: bridge
+    ports:
+      - 5044:5044
+    volumes:
+      - logstash_config:/usr/share/logstash/config/
+      - logstash_pipeline:/usr/share/logstash/pipeline/
+      - /etc/hosts:/etc/hosts
+
+  dist_server:
+    container_name: dist_server
+    restart: always
+    image: ${DOCKER_REGISTRY}/gs/dist_server:${DIST_SERVER_VER}
+    ports:
+      - '50022:22'
+    volumes:
+      - dist_server_data:/data
+    volumes_from:
+      - logstash:rw
+
+  es:
+    image: elasticsearch:${ELASTIC_VER}
+    restart: always
+    network_mode: host
+    environment:
+      - node.name=es3
+      - cluster.name=${ES_CLUSTER_NAME}
+      - cluster.initial_master_nodes=${ES_CLUSTER_INITIAL_MASTER_NODES}
+      - discovery.seed_hosts=gm1,gm2
+      - cluster.max_shards_per_node=9999
+      - thread_pool.write.queue_size=800
+      - bootstrap.memory_lock=true
+      - node.master=true
+      - node.data=true
+      - node.ingest=true
+      - node.ml=false
+      - node.attr.zone=${ES_NODE_ZONE}
+      - network.host=0.0.0.0
+      - network.publish_host=192.168.3.35
+      - transport.tcp.port=9300
+      - xpack.security.enabled=false
+      - xpack.monitoring.enabled=true
+      - xpack.monitoring.collection.enabled=true
+      - xpack.monitoring.elasticsearch.collection.enabled=true
+      - indices.fielddata.cache.size=35%
+      #- ES_HEAP_SIZE=512m                  #根据内核情况而定
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"           #根据内核情况而定
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es3_data:/usr/share/elasticsearch/data
+      - /etc/hosts:/etc/hosts
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  bsmongo:
+    container_name: bsmongo
+    image: mongo:${MONGO_VER}
+    restart: always
+    command: mongos --bind_ip_all --port=27017 --configdb=${MONGO_CONFIGDB}
+    volumes:
+      - /etc/hosts:/etc/hosts
+    ports:
+      - '127.0.0.1:27019:27017'
+
+  bsmongo_backup:
+    container_name: bsmongo_backup
+    build:
+      context: ./bsmongo_backup
+    restart: always
+    environment:
+    - BACKUP_MINUTES="7,22,37,52"
+    volumes:
+      - /etc/hosts:/etc/hosts
+      - bsmongo_backup_data:/backup
+
+volumes:
+  dist_server_data:
+    driver: local
+
+  logstash_config:
+    driver: local
+  logstash_pipeline:
+    driver: local
+
+  es3_data:
+    driver: local
+
+  bsmongo_backup_data:
+    driver: local

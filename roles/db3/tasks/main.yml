@@ -1,0 +1,11 @@
+- name: mv db3
+  copy: src=db3 dest=/home/gs/
+
+- name: init bsmongo-c3
+  shell: source /home/gs/db3/conf/env;cd /home/gs/db3/bsmongo-c3;docker-compose up -d --remove-orphans
+
+- name: init bsmongo-d3
+  shell: source /home/gs/db3/conf/env;cd /home/gs/db3/bsmongo-d3;docker-compose up -d --remove-orphans
+
+- name: init bsmongo-s
+  shell: source /home/gs/db3/conf/env;cd /home/gs/db3/bsmongo-s;docker-compose up -d --remove-orphans

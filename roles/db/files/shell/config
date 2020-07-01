@@ -1,0 +1,5 @@
+cfg_pri_container=bsmongo_c-1
+
+cfg_reps="db1:35001 db2:35002 db3:35003"
+
+data_shards="bsmongo-s-1/db1:34011 bsmongo-s-2/db2:34022 bsmongo-s-3/db3:34033"

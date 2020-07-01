@@ -1,0 +1,244 @@
+version: '2'
+
+services:
+
+  bsmongo:
+    container_name: bsmongo
+    image: mongo:3.6.12
+    restart: always
+    command: mongos --bind_ip_all --port=27017 --configdb=bsmongo-cfg/db1:35001,db2:35002,db3:35003
+    volumes:
+      - /etc/hosts:/etc/hosts
+    ports:
+      - "127.0.0.1:27017:27017"
+
+  gs1:
+    container_name: gs1
+    hostname: gs1
+    image: gm1:5500/gs/game_server:v5
+    restart: always
+    ports:
+      - 0.0.0.0:2001:22
+      - 0.0.0.0:1001:1000
+      - 0.0.0.0:3001:1002
+      - 0.0.0.0:4001:1002
+      - 0.0.0.0:5001:5001
+    ulimits:
+      core: -1
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+      nproc:
+        soft: 8192
+        hard: 8192
+    volumes:
+      - gs1:/game
+      - /etc/hosts:/etc/hosts
+  
+  gs2:
+    container_name: gs2
+    hostname: gs2
+    image: gm1:5500/gs/game_server:v5
+    restart: always
+    ports:
+      - 0.0.0.0:2001:22
+      - 0.0.0.0:1001:1000
+      - 0.0.0.0:3001:1002
+      - 0.0.0.0:4001:1002
+      - 0.0.0.0:5001:5001
+    ulimits:
+      core: -1
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+      nproc:
+        soft: 8192
+        hard: 8192
+    volumes:
+      - gs2:/game
+      - /etc/hosts:/etc/hosts
+
+  gs3:
+    container_name: gs3
+    hostname: gs3
+    image: gm1:5500/gs/game_server:v5
+    restart: always
+    ports:
+      - 0.0.0.0:2001:22
+      - 0.0.0.0:1001:1000
+      - 0.0.0.0:3001:1002
+      - 0.0.0.0:4001:1002
+      - 0.0.0.0:5001:5001
+    ulimits:
+      core: -1
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+      nproc:
+        soft: 8192
+        hard: 8192
+    volumes:
+      - gs3:/game
+      - /etc/hosts:/etc/hosts
+
+gs4:
+    container_name: gs4
+    hostname: gs4
+    image: gm1:5500/gs/game_server:v5
+    restart: always
+    ports:
+      - 0.0.0.0:2001:22
+      - 0.0.0.0:1001:1000
+      - 0.0.0.0:3001:1002
+      - 0.0.0.0:4001:1002
+      - 0.0.0.0:5001:5001
+    ulimits:
+      core: -1
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+      nproc:
+        soft: 8192
+        hard: 8192
+    volumes:
+      - gs4:/game
+      - /etc/hosts:/etc/hosts
+  
+  gs5:
+    container_name: gs5
+    hostname: gs5
+    image: gm1:5500/gs/game_server:v5
+    restart: always
+    ports:
+      - 0.0.0.0:2001:22
+      - 0.0.0.0:1001:1000
+      - 0.0.0.0:3001:1002
+      - 0.0.0.0:4001:1002
+      - 0.0.0.0:5001:5001
+    ulimits:
+      core: -1
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+      nproc:
+        soft: 8192
+        hard: 8192
+    volumes:
+      - gs5:/game
+      - /etc/hosts:/etc/hosts
+      
+  gs6:
+    container_name: gs6
+    hostname: gs6
+    image: gm1:5500/gs/game_server:v5
+    restart: always
+    ports:
+      - 0.0.0.0:2001:22
+      - 0.0.0.0:1001:1000
+      - 0.0.0.0:3001:1002
+      - 0.0.0.0:4001:1002
+      - 0.0.0.0:5001:5001
+    ulimits:
+      core: -1
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+      nproc:
+        soft: 8192
+        hard: 8192
+    volumes:
+      - gs6:/game
+      - /etc/hosts:/etc/hosts
+
+  gs7:
+    container_name: gs7
+    hostname: gs7
+    image: gm1:5500/gs/game_server:v5
+    restart: always
+    ports:
+      - 0.0.0.0:2001:22
+      - 0.0.0.0:1001:1000
+      - 0.0.0.0:3001:1002
+      - 0.0.0.0:4001:1002
+      - 0.0.0.0:5001:5001
+    ulimits:
+      core: -1
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+      nproc:
+        soft: 8192
+        hard: 8192
+    volumes:
+      - gs7:/game
+      - /etc/hosts:/etc/hosts
+
+  gs8:
+    container_name: gs8
+    hostname: gs8
+    image: gm1:5500/gs/game_server:v5
+    restart: always
+    ports:
+      - 0.0.0.0:2001:22
+      - 0.0.0.0:1001:1000
+      - 0.0.0.0:3001:1002
+      - 0.0.0.0:4001:1002
+      - 0.0.0.0:5001:5001
+    ulimits:
+      core: -1
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+      nproc:
+        soft: 8192
+        hard: 8192
+    volumes:
+      - gs8:/game
+      - /etc/hosts:/etc/hosts
+
+
+volumes:
+  docker_registry_data:
+    driver: local
+  gs1:
+    driver: local
+  gs2:
+    driver: local
+  gs3:
+    driver: local
+  gs4:
+    driver: local
+  gs5:
+    driver: local
+  gs6:
+    driver: local
+  gs7:
+    driver: local
+  gs8:
+    driver: local
+  mongo-data:
+    driver: local

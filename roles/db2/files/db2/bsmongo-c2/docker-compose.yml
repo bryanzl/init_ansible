@@ -1,0 +1,18 @@
+version: "2.2"
+
+services:
+
+  configdb:
+    container_name: bsmongo_c-2
+    image: mongo:${MONGO_VER}
+    restart: always
+    command: mongod --configsvr --bind_ip_all --port=27017 --replSet=bsmongo-cfg --dbpath=/data/configdb --storageEngine=wiredTiger --wiredTigerCacheSizeGB=1
+    volumes:
+      - configdb:/data/configdb
+      - /etc/hosts:/etc/hosts
+    ports:
+      - '35002:27017'
+
+volumes:
+  configdb:
+    driver: local

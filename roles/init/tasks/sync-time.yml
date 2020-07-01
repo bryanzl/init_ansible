@@ -1,0 +1,4 @@
+- name: ntpdate to sync time
+  shell: 
+    ntpdate ntp1.aliyun.com
+    hwclock -w

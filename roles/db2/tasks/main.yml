@@ -1,0 +1,11 @@
+- name: mv db2
+  copy: src=db2 dest=/home/gs/
+
+- name: init bsmongo-c2
+  shell: source /home/gs/db2/conf/env;cd /home/gs/db2/bsmongo-c2;docker-compose up -d --remove-orphans
+
+- name: init bsmongo-d2
+  shell: source /home/gs/db2/conf/env;cd /home/gs/db2/bsmongo-d2;docker-compose up -d --remove-orphans
+
+- name: init bsmongo-s
+  shell: source /home/gs/db2/conf/env;cd /home/gs/db2/bsmongo-s;docker-compose up -d --remove-orphans

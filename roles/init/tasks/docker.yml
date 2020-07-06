@@ -1,28 +1,31 @@
-- name: install docker
+- name: 安装docker-ce
   yum: name=docker-ce state=present
+  register: result 
 
-- name: create /etc/docker
-  file:
-    path: "/etc/docker"
-    state: directory
+#- name: create /etc/docker
+  #file:
+    #path: "/etc/docker"
+    #state: directory
+  #when: result|success 
 
-- name: create /data/docker
-  file:
-    path: "/etc/docker"
-    state: directory
+#- name: 创建 /data/docker数据目录
+  #file:
+    #path: "/etc/docker"
+    #state: directory
 
-- name: provide docker-ce configfile
+- name: 配置docker加速器
   template:
     src: daemon.json
     dest: /etc/docker/daemon.json
+    when: result|success 
 
-- name: provide docker-compose configfile
+- name: 配置docker-compose命令权限
   copy:
     src: docker-compose
     dest: /usr/local/bin/docker-compose
     mode: 0755
 
-- name: config docker-compose
+- name: 配置docker-compose命令
   shell: ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
   
 - name: start docker service

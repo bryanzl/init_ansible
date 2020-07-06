@@ -4,5 +4,5 @@
     regexp: "^SELINUX="
     line: "SELINUX=disabled"
 
-- name: Selinux stop
+- name: Selinux已关闭
   selinux: state=disabled

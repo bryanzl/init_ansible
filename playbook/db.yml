@@ -3,16 +3,16 @@
   become: yes
   gather_facts: true
   roles:
-    - db1
+    - ../roles/db1
 - hosts: db2
   remote_user: gs
   become: yes
   gather_facts: true
   roles:
-    - db2
+    - ../roles/db2
 - hosts: db3
   remote_user: gs
   become: yes
   gather_facts: true
   roles:
-    - db3
+    - ../roles/db3

@@ -1,4 +1,4 @@
-- name: ntpdate to sync time
+- name: 配置同步阿里云时间服务器
   shell: 
     ntpdate ntp1.aliyun.com
     hwclock -w

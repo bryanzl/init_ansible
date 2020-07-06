@@ -1,0 +1,33 @@
+[db1]
+192.168.3.36 hostname=db1 #ansible_ssh_user=root ansible_ssh_pass=redhat
+[db2]
+192.168.3.37 hostname=db2 #ansible_ssh_user=root ansible_ssh_pass=redhat
+[db3]
+192.168.3.38 hostname=db3 #ansible_ssh_user=root ansible_ssh_pass=redhat
+[gm1]
+192.168.3.33 hostname=gm1 #ansible_ssh_user=root ansible_ssh_pass=redhat
+[gm2]
+192.168.3.34 hostname=gm2 #ansible_ssh_user=root ansible_ssh_pass=redhat
+[gm3]
+192.168.3.35 hostname=gm3 #ansible_ssh_user=root ansible_ssh_pass=redhat
+[game1]
+192.168.3.30 hostname=game1 #ansible_ssh_user=gs ansible_ssh_port=2707 ansible_ssh_pass=redhat
+[game2]
+192.168.3.31 hostname=game2 #ansible_ssh_user=gs ansible_ssh_port=2707 ansible_ssh_pass=redhat
+[game:children]
+game1
+game2
+[gm:children]
+gm1
+gm2
+gm3
+[db:children]
+db1
+db2
+db3
+[all:vars]
+ansible_ssh_user=gs
+ansible_ssh_port=2707
+#ansible_ssh_pass=redhat
+[master]
+192.168.3.40

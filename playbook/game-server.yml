@@ -1,6 +1,6 @@
-- hosts: gm1
+- hosts: game
   remote_user: gs
   become: yes
   gather_facts: true
   roles:
-    - docker-registry
+    - ../roles/game-server

@@ -3,16 +3,16 @@
   become: yes
   gather_facts: true
   roles:
-    - gm1
+    - ../roles/gm1
 - hosts: gm2
   remote_user: gs
   become: yes
   gather_facts: true
   roles:
-    - gm2
+    - ../roles/gm2
 - hosts: gm3
   remote_user: gs
   become: yes
   gather_facts: true
   roles:
-    - gm3
+    - ../roles/gm3

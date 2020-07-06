@@ -1,6 +1,6 @@
-- hosts: game
+- hosts: db1
   remote_user: gs
   become: yes
   gather_facts: true
   roles:
-    - game-server
+    - ../roles/db

@@ -7,9 +7,10 @@
 - include_tasks: hostname.yml
 - include_tasks: selinux.yml
 - include_tasks: user.yml
-- include_tasks: yum.yml
+- include_tasks: install_packages.yml
 - include_tasks: docker.yml
 - include_tasks: sync-time.yml
 - include_tasks: systcl.yml
+- include_tasks: crontab.yml 
 - include_tasks: sshd.yml
 

@@ -4,13 +4,13 @@
     password: "{{ 'redhat'|password_hash('sha512') }}"
     state: present
 
-- name: Create .ssh
+- name: 创建用户密钥
   file: path=/home/gs/.ssh owner=gs group=gs mode=700 state=directory
 
-- name: Add keys
+- name: 配置用户密钥
   copy: src=/home/gs/.ssh/authorized_keys dest=/home/gs/.ssh/authorized_keys owner=gs group=gs mode=600
 
-- name: 设置gs sudoers
+- name: 设置用户root权限
   lineinfile:
     dest: /etc/sudoers
     line: 'gs ALL = (root)  NOPASSWD: ALL'

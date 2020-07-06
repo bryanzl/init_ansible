@@ -1,14 +1,14 @@
 - name: 删除老yum源
   shell: rm -rf /etc/yum.repos.d
 
-- name: 添加新yum源 
+- name: 添加阿里云源 
   copy: src={{ item }} dest=/etc/yum.repos.d/
   with_items:
     - "Centos-7.repo"
     - "docker-ce.repo"
     - "epel-7.repo"
 
-- name: Basic lib install
+- name: 安装常用软件包
   yum: name={{ item }} state=latest update_cache=yes
   with_items:
     - iotop
@@ -43,5 +43,6 @@
     - rsync 
     - jq 
     - htop
+    - tlnet
 
 

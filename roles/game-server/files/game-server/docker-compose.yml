@@ -4,9 +4,9 @@ services:
 
   bsmongo:
     container_name: bsmongo
-    image: mongo:3.6.12
+    image: mongo:${MONGO_VER}
     restart: always
-    command: mongos --bind_ip_all --port=27017 --configdb=bsmongo-cfg/db1:35001,db2:35002,db3:35003
+    command: mongos --bind_ip_all --port=27017 --configdb=${MONGO_VER}
     volumes:
       - /etc/hosts:/etc/hosts
     ports:

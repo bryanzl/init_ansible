@@ -1,8 +1,8 @@
-- name: change name 永久修改
+- name: 永久修改主机名
   raw: "echo {{hostname|quote}} > /etc/hostname"
      
-- name: change name 临时修改
+- name: 临时修改主机名
   shell: hostname {{hostname|quote}}
 
-- name: 添加hosts
+- name: 添加主机清单
   template: src=hosts.j2 dest=/etc/hosts
